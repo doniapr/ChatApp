@@ -1,5 +1,6 @@
 package com.doniapr.chatapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -16,46 +17,37 @@ import rx.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var userid = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val qiscusAccount = intent.getParcelableExtra<QiscusAccount>("TAG")
+        val chatRoomAdapter = ChatRoomAdapter()
 
-        val accountAdapter = AccountAdapter()
-
-        QiscusApi.getInstance().getUsers("")
+        QiscusApi.getInstance()
+            .getAllChatRooms(true, false, false,0,100)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { qiscusAccounts: List<QiscusAccount>? ->
-                    Log.e("TAG", qiscusAccounts.toString())
-                    if (qiscusAccounts != null) {
-                        accountAdapter.setData(qiscusAccounts)
-                        userid = qiscusAccounts[0].id.toString()
+                {
+                    Log.e("TAG", it.toString())
+                    if (it != null) {
+                        chatRoomAdapter.setData(it)
                     }
                 },
-                { t: Throwable? -> Log.e("TAG", t?.message, t) })
+                { t: Throwable? -> Log.e("TAG", t?.message, t) }
+            )
 
-        with(binding.rvUserList){
+        with(binding.rvChatRoomList){
             layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
-            adapter = accountAdapter
+            adapter = chatRoomAdapter
         }
-    }
 
-    fun test(){
-        QiscusApi.getInstance()
-            .chatUser(userid, null)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ Log.e("TAG", it.name) }, { Log.e("TAG", it.message, it) })
-
-        var qiscusChatRooms = QiscusCore.getDataStore().getChatRooms(100)
-
-        Log.e("TAG", qiscusChatRooms.toString())
+        binding.fabAddChatRoom.setOnClickListener {
+            val intent = Intent(applicationContext, UserListActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

@@ -6,11 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.doniapr.chatapp.databinding.ItemAccountBinding
 import com.qiscus.sdk.chat.core.data.model.QiscusAccount
+import com.qiscus.sdk.chat.core.data.model.QiscusChatRoom
 
-class AccountAdapter: RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
-    private var accounts = ArrayList<QiscusAccount>()
+class ChatRoomAdapter: RecyclerView.Adapter<ChatRoomAdapter.AccountViewHolder>() {
+    private var accounts = ArrayList<QiscusChatRoom>()
 
-    fun setData(accountList: List<QiscusAccount>){
+    fun setData(accountList: List<QiscusChatRoom>){
         accounts.addAll(accountList)
         notifyDataSetChanged()
     }
@@ -28,15 +29,15 @@ class AccountAdapter: RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
     override fun getItemCount(): Int = accounts.size
 
     class AccountViewHolder(val binding: ItemAccountBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bindItem(qiscusAccount: QiscusAccount){
+        fun bindItem(qiscusChatRoom: QiscusChatRoom){
             with(binding){
                 root.setOnClickListener {
                     val intent = Intent(root.context, ChatRoomActivity::class.java)
-                    intent.putExtra("user", qiscusAccount)
+                    intent.putExtra("user_id", qiscusChatRoom.id)
                     root.context.startActivity(intent)
                 }
 
-                tvAccountName.text = qiscusAccount.username
+                tvAccountName.text = qiscusChatRoom.name
             }
         }
 
