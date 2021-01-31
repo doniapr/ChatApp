@@ -1,9 +1,9 @@
 package com.doniapr.chatapp.group
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.doniapr.chatapp.chatroom.ChatRoomActivity
 import com.doniapr.chatapp.databinding.ActivityCreateGroupBinding
@@ -21,14 +21,14 @@ class CreateGroupActivity : AppCompatActivity() {
         binding = ActivityCreateGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val accountListForGroupAdapter = AccountListForGroupAdapter{qiscusAccount, isSelected ->
-            if (isSelected){
+        val accountListForGroupAdapter = AccountListForGroupAdapter { qiscusAccount, isSelected ->
+            if (isSelected) {
                 selectedAccount.add(qiscusAccount.email.toString())
             } else {
                 selectedAccount.remove(qiscusAccount.email.toString())
             }
 
-            Log.e("SELECTED", selectedAccount.toString())
+            Log.i("SELECTED", selectedAccount.toString())
         }
 
         QiscusApi.getInstance().getUsers("")
@@ -40,36 +40,42 @@ class CreateGroupActivity : AppCompatActivity() {
                         accountListForGroupAdapter.setData(qiscusAccounts)
                     }
                 },
-                { t: Throwable? -> Log.e("TAG", t?.message, t) })
+                { t: Throwable? -> Log.e("onErrorGetUser", t?.message, t) })
 
-        with(binding.rvUserListGroup){
-            layoutManager = LinearLayoutManager(this@CreateGroupActivity, LinearLayoutManager.VERTICAL, false)
+        with(binding.rvUserListGroup) {
+            layoutManager =
+                LinearLayoutManager(this@CreateGroupActivity, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
             adapter = accountListForGroupAdapter
         }
 
         binding.btnCreateGroup.setOnClickListener {
-            if (binding.etGroupName.text.isNullOrEmpty()){
+            if (binding.etGroupName.text.isNullOrEmpty()) {
                 binding.etGroupName.error = "Group name must be set"
                 binding.etGroupName.requestFocus()
 
                 return@setOnClickListener
             }
-            val name:String = binding.etGroupName.text.toString()
+            val name: String = binding.etGroupName.text.toString()
 
-            QiscusApi.getInstance().createGroupChat(name, selectedAccount, "https://d1edrlpyc25xu0.cloudfront.net/kiwari-prod/image/upload/75r6s_jOHa/1507541871-avatar-mine.png", null)
+            QiscusApi.getInstance().createGroupChat(
+                name,
+                selectedAccount,
+                "https://d1edrlpyc25xu0.cloudfront.net/kiwari-prod/image/upload/75r6s_jOHa/1507541871-avatar-mine.png",
+                null
+            )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        Log.e("Create Group", it.toString())
+                        Log.i("Create Group", it.toString())
                         val intent = Intent(applicationContext, ChatRoomActivity::class.java)
                         intent.putExtra("chat_room", it)
 
                         startActivity(intent)
                     },
                     { t: Throwable? ->
-                        Log.e("Error Create Group", t?.message, t)
+                        Log.e("onErrorCreateGroup", t?.message, t)
                     }
                 )
         }
