@@ -21,9 +21,14 @@ class CreateGroupActivity : AppCompatActivity() {
         binding = ActivityCreateGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val accountListForGroupAdapter = AccountListForGroupAdapter{
-            Log.e("SELECTED", it.username)
-            selectedAccount.add(it.email.toString())
+        val accountListForGroupAdapter = AccountListForGroupAdapter{qiscusAccount, isSelected ->
+            if (isSelected){
+                selectedAccount.add(qiscusAccount.email.toString())
+            } else {
+                selectedAccount.remove(qiscusAccount.email.toString())
+            }
+
+            Log.e("SELECTED", selectedAccount.toString())
         }
 
         QiscusApi.getInstance().getUsers("")

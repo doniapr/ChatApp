@@ -1,13 +1,16 @@
 package com.doniapr.chatapp.group
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.doniapr.chatapp.R
 import com.doniapr.chatapp.databinding.ItemAccountListForGroupBinding
 import com.qiscus.sdk.chat.core.data.model.QiscusAccount
 
-class AccountListForGroupAdapter(private val listener: (QiscusAccount) -> Unit): RecyclerView.Adapter<AccountListForGroupAdapter.AccountListViewHolder>() {
+class AccountListForGroupAdapter(private val listener: (QiscusAccount, Boolean) -> Unit): RecyclerView.Adapter<AccountListForGroupAdapter.AccountListViewHolder>() {
     private var accounts = ArrayList<QiscusAccount>()
 
     fun setData(accountList: List<QiscusAccount>){
@@ -26,11 +29,20 @@ class AccountListForGroupAdapter(private val listener: (QiscusAccount) -> Unit):
 
     override fun getItemCount(): Int = accounts.size
 
-    class AccountListViewHolder(val binding: ItemAccountListForGroupBinding):RecyclerView.ViewHolder(binding.root) {
-        fun bindItem(qiscusAccount: QiscusAccount, listener: (QiscusAccount) -> Unit){
+    class AccountListViewHolder(private val binding: ItemAccountListForGroupBinding):RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("ResourceAsColor")
+        fun bindItem(qiscusAccount: QiscusAccount, listener: (QiscusAccount, Boolean) -> Unit){
+            var isSelected = false
             with(binding){
                 root.setOnClickListener {
-                    listener(qiscusAccount)
+                    isSelected = if (isSelected){
+                        cvAccount.setBackgroundColor(android.R.color.darker_gray)
+                        !isSelected
+                    } else {
+                        cvAccount.setBackgroundColor(R.color.teal_700)
+                        !isSelected
+                    }
+                    listener(qiscusAccount, isSelected)
                 }
 
                 tvNameUser.text = qiscusAccount.username

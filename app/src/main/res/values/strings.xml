@@ -5,4 +5,7 @@
     <string name="login">Login</string>
     <string name="account_name">Account Name</string>
     <string name="message">Message</string>
+    <string name="group_name">Group Name</string>
+    <string name="select_group_participant">Select Group Participant</string>
+    <string name="create_group">Create Group</string>
 </resources>
