@@ -27,7 +27,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.io.File
 
-
 class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
     private lateinit var binding: ActivityChatRoomBinding
     private var qiscusChatRoom: QiscusChatRoom? = QiscusChatRoom()
@@ -59,11 +58,10 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    Log.e("NAME", it.name)
                     getChatHistory(it.id)
                 },
                 { t: Throwable? ->
-                    Log.e("TAG", t?.message, t)
+                    Log.e("onErrorGetChatRoom", t?.message, t)
                 }
             )
 
@@ -124,7 +122,7 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
                     binding.rvChat.scrollToPosition(listComment.size - 1)
                 },
                 { t: Throwable? ->
-                    Log.e("Chat history", t?.message, t)
+                    Log.e("onErrorChatHistory", t?.message, t)
                 }
             )
     }
@@ -135,17 +133,16 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    Log.e("TAG", it.sender)
+                    Log.i("onSuccessSendMessage", it.toString())
                 },
                 {
-                    Log.e("TAG", it.message, it)
+                    Log.e("onErrorSendMessage", it.message, it)
                 }
             )
     }
 
     @Subscribe
     fun onReceiveComment(event: QiscusCommentReceivedEvent) {
-        Log.e("KOMEN", event.qiscusComment.message)
         listComment.add(event.qiscusComment)
         chatAdapter.setData(listComment)
         binding.rvChat.scrollToPosition(listComment.size - 1)
@@ -168,7 +165,6 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
     }
 
     private fun openGallery() {
-        //  first check if permissions was granted
         if (checkSelfPermission()) {
             val intent: Intent =
                 if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
@@ -176,7 +172,6 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
                 } else {
                     Intent(Intent.ACTION_PICK, MediaStore.Video.Media.INTERNAL_CONTENT_URI)
                 }
-            //  In this example we will set the type to video
             intent.type = attachmentType
             intent.action = Intent.ACTION_GET_CONTENT
             intent.putExtra("return-data", true)
@@ -190,10 +185,8 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SELECT_REQUEST && resultCode == RESULT_OK) {
-            if (data != null) {
-                pickiT.getPath(data.data, Build.VERSION.SDK_INT)
-            }
+        if (requestCode == SELECT_REQUEST && resultCode == RESULT_OK && data != null) {
+            pickiT.getPath(data.data, Build.VERSION.SDK_INT)
         }
     }
 
@@ -270,10 +263,10 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        Log.e("TAG", it.sender)
+                        Log.e("OnSuccessSendMessage", it.toString())
                     },
                     {
-                        Log.e("TAG", it.message, it)
+                        Log.e("OnErrorSendMessage", it.message, it)
                     }
                 )
         }
