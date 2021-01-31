@@ -16,8 +16,13 @@
         android:theme="@style/Theme.ChatApp"
         android:requestLegacyExternalStorage="true">
         <activity android:name=".group.CreateGroupActivity"></activity>
-        <activity android:name=".UserListActivity" />
-        <activity android:name=".chatroom.ChatRoomActivity" />
+        <activity android:name=".personalchat.UserListActivity" />
+        <activity android:name=".chatroom.ChatRoomActivity"
+            android:parentActivityName=".home.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.doniapr.chatapp.home.MainActivity" />
+        </activity>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +30,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".home.MainActivity"
+            android:launchMode="singleTop">
+
+        </activity>
     </application>
 
 </manifest>

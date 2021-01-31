@@ -49,7 +49,10 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
 
         pickiT = PickiT(applicationContext, this, this)
 
-        qiscusChatRoom = intent.getParcelableExtra<QiscusChatRoom>("chat_room")
+        qiscusChatRoom = intent.getParcelableExtra("chat_room")
+
+        supportActionBar?.title = qiscusChatRoom?.name
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         QiscusApi.getInstance().getChatRoomInfo(qiscusChatRoom!!.id)
             .subscribeOn(Schedulers.io())
@@ -90,7 +93,7 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
         }
 
         binding.btnAttachment.setOnClickListener {
-            if (isAttachmentOpen){
+            if (isAttachmentOpen) {
                 binding.llAttachment.visibility = View.GONE
                 isAttachmentOpen = !isAttachmentOpen
             } else {
@@ -253,12 +256,14 @@ class ChatRoomActivity : AppCompatActivity(), PickiTCallbacks {
     ) {
         if (wasSuccessful) {
             val file = File(path)
-            val comment = qiscusChatRoom?.let { QiscusComment.generateFileAttachmentMessage(
-                it.id,
-                path,
-                "",
-                file.name
-            )}
+            val comment = qiscusChatRoom?.let {
+                QiscusComment.generateFileAttachmentMessage(
+                    it.id,
+                    path,
+                    "",
+                    file.name
+                )
+            }
             QiscusApi.getInstance()
                 .sendFileMessage(comment, file) { total -> Log.e("Onprogress", total.toString()) }
                 .subscribeOn(Schedulers.io())
