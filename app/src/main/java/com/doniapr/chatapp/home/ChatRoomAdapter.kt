@@ -8,7 +8,7 @@ import com.doniapr.chatapp.chatroom.ChatRoomActivity
 import com.doniapr.chatapp.databinding.ItemAccountBinding
 import com.qiscus.sdk.chat.core.data.model.QiscusChatRoom
 
-class ChatRoomAdapter : RecyclerView.Adapter<ChatRoomAdapter.AccountViewHolder>() {
+class ChatRoomAdapter : RecyclerView.Adapter<ChatRoomAdapter.ChatRoomViewHolder>() {
     private var accounts = ArrayList<QiscusChatRoom>()
 
     fun setData(accountList: List<QiscusChatRoom>) {
@@ -16,19 +16,19 @@ class ChatRoomAdapter : RecyclerView.Adapter<ChatRoomAdapter.AccountViewHolder>(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatRoomViewHolder {
         val binding = ItemAccountBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AccountViewHolder(binding)
+        return ChatRoomViewHolder(binding)
 
     }
 
-    override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ChatRoomViewHolder, position: Int) {
         holder.bindItem(accounts[position])
     }
 
     override fun getItemCount(): Int = accounts.size
 
-    class AccountViewHolder(private val binding: ItemAccountBinding) :
+    class ChatRoomViewHolder(private val binding: ItemAccountBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bindItem(qiscusChatRoom: QiscusChatRoom) {
             with(binding) {
