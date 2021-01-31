@@ -28,7 +28,6 @@
             android:id="@+id/et_login_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="doniapr14@gmail.com"
             android:autofillHints="@string/email"
             android:inputType="textEmailAddress"
             tools:ignore="LabelFor" />
@@ -46,7 +45,6 @@
             android:id="@+id/et_login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jancuklah@14"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_login_password"
             app:layout_constraintEnd_toEndOf="parent"
