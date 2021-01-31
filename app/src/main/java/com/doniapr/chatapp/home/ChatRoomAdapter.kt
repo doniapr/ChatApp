@@ -12,6 +12,8 @@ class ChatRoomAdapter : RecyclerView.Adapter<ChatRoomAdapter.ChatRoomViewHolder>
     private var accounts = ArrayList<QiscusChatRoom>()
 
     fun setData(accountList: List<QiscusChatRoom>) {
+        if (accountList.isNotEmpty())
+            accounts.clear()
         accounts.addAll(accountList)
         notifyDataSetChanged()
     }

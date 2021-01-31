@@ -16,6 +16,7 @@ import rx.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val chatRoomAdapter = ChatRoomAdapter()
     private var isFabVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,22 +24,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val chatRoomAdapter = ChatRoomAdapter()
         binding.pbMain.visibility = View.VISIBLE
 
-        QiscusApi.getInstance()
-            .getAllChatRooms(true, false, false, 0, 100)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    if (it != null) {
-                        chatRoomAdapter.setData(it)
-                        binding.pbMain.visibility = View.GONE
-                    }
-                },
-                { t: Throwable? -> Log.e("onErrorGetAllChatRoom", t?.message, t) }
-            )
+        getAllChatRoom()
 
         with(binding.rvChatRoomList) {
             layoutManager =
@@ -68,5 +56,26 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, CreateGroupActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun getAllChatRoom(){
+        QiscusApi.getInstance()
+            .getAllChatRooms(true, false, false, 0, 100)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    if (it != null) {
+                        chatRoomAdapter.setData(it)
+                        binding.pbMain.visibility = View.GONE
+                    }
+                },
+                { t: Throwable? -> Log.e("onErrorGetAllChatRoom", t?.message, t) }
+            )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAllChatRoom()
     }
 }
